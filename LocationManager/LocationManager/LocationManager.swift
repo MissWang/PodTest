@@ -127,7 +127,7 @@ public class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    private func sendAllReply(){
+    func sendAllReply(){
         let allRequests = requests
         synchronized(requests) { 
             for request in allRequests {
@@ -144,7 +144,7 @@ public class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    private func checkLocationStatus(){
+    func checkLocationStatus(){
         
         var needLocation = false, needHeading = false
         synchronized(requests) {
@@ -204,7 +204,7 @@ public class LocationManager: NSObject, CLLocationManagerDelegate {
     }
 
     
-    private func synchronized(lock:AnyObject,f:()->()){
+    func synchronized(lock:AnyObject,f:()->()){
         objc_sync_enter(lock)
         f()
         objc_sync_exit(lock)

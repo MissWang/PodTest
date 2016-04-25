@@ -64,7 +64,7 @@ public class LocationRequest: NSObject {
         self.worstAccuracy = worstAccuracy
     }
     
-    public func accept(location:CLLocation) -> Bool {
+    func accept(location:CLLocation) -> Bool {
         if type == .NavigationRequest {
             return true
         }
@@ -88,7 +88,7 @@ public class LocationRequest: NSObject {
         return true
     }
     
-    public func alreadyHaveBestLocation() -> Bool {
+    func alreadyHaveBestLocation() -> Bool {
         return location != nil && location!.horizontalAccuracy <= bestAccuracy
     }
 }
