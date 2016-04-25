@@ -9,16 +9,18 @@
 import Foundation
 import CoreLocation
 
-enum LocationRequestType {
+public enum LocationRequestType {
     case NormalRequest
     case NavigationRequest
     case HeadingRequest
 }
 
-typealias LocationCallback = (location:CLLocation?,error:NSError?) -> Void
-typealias HeadingCallback = (heading:CLHeading) -> Void
+public typealias LocationCallback = (location:CLLocation?,error:NSError?) -> Void
+public typealias HeadingCallback = (heading:CLHeading) -> Void
 
-class LocationRequest: NSObject {
+@objc
+
+public class LocationRequest: NSObject {
     var bestAccuracy:CLLocationAccuracy = 0  //for NormalRequest
     var worstAccuracy:CLLocationAccuracy = 0  //for NormalRequest
     var type:LocationRequestType
@@ -26,28 +28,28 @@ class LocationRequest: NSObject {
     var isActive = true
     var disableByManager = false
     var location:CLLocation?
-    var startTime = NSDate()
-    var headingCallback:HeadingCallback?
-    var locationCallback:LocationCallback?
-    var latestLocation:CLLocation?
+    public var startTime = NSDate()
+    public var headingCallback:HeadingCallback?
+    public var locationCallback:LocationCallback?
+    public var latestLocation:CLLocation?
     
-    func setLocateCallback(callback:LocationCallback){
+    public func setLocateCallback(callback:LocationCallback){
         locationCallback = callback
     }
     
-    func setHeadCallback(callback:HeadingCallback){
+    public func setHeadCallback(callback:HeadingCallback){
         headingCallback = callback
     }
     
-    class func normalRequest() -> LocationRequest{
+    public class func normalRequest() -> LocationRequest{
         return LocationRequest(type: .NormalRequest, timeInterval: 20,bestAccuracy: 5, worstAccuracy: 30)
     }
     
-    class func navigationRequest() -> LocationRequest {
+    public class func navigationRequest() -> LocationRequest {
         return LocationRequest(type: .NavigationRequest)
     }
     
-    class func headingRequest() -> LocationRequest {
+    public class func headingRequest() -> LocationRequest {
         return LocationRequest(type: .HeadingRequest)
     }
     
@@ -55,14 +57,14 @@ class LocationRequest: NSObject {
         self.type = type
     }
     
-    init(type:LocationRequestType, timeInterval:NSTimeInterval, bestAccuracy:CLLocationAccuracy, worstAccuracy:CLLocationAccuracy) {
+    public init(type:LocationRequestType, timeInterval:NSTimeInterval, bestAccuracy:CLLocationAccuracy, worstAccuracy:CLLocationAccuracy) {
         self.type = type
         self.timeInterval = timeInterval
         self.bestAccuracy = bestAccuracy
         self.worstAccuracy = worstAccuracy
     }
     
-    func accept(location:CLLocation) -> Bool {
+    public func accept(location:CLLocation) -> Bool {
         if type == .NavigationRequest {
             return true
         }
@@ -86,7 +88,7 @@ class LocationRequest: NSObject {
         return true
     }
     
-    func alreadyHaveBestLocation() -> Bool {
+    public func alreadyHaveBestLocation() -> Bool {
         return location != nil && location!.horizontalAccuracy <= bestAccuracy
     }
 }

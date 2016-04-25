@@ -12,13 +12,15 @@ import CoreLocation
 
 let kNotificationLocationChangeStatus = "kNotificationLocationChangeStatus"
 
-class LocationManager: NSObject, CLLocationManagerDelegate {
+@objc
+
+public class LocationManager: NSObject, CLLocationManagerDelegate {
     
     var locationManager = CLLocationManager()
     var requests = [LocationRequest]()
     var backgroundTaskIdentifier = UIBackgroundTaskInvalid
-    var authorizationStatus = CLAuthorizationStatus.NotDetermined
-    class func share() -> LocationManager{
+    public var authorizationStatus = CLAuthorizationStatus.NotDetermined
+    public class func share() -> LocationManager{
         struct StructLocationManager {
             static var locationManager:LocationManager!
             static var predicate = dispatch_once_t()
@@ -63,7 +65,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         checkLocationStatus()
     }
     
-    func addRequest(request:LocationRequest){
+    public func addRequest(request:LocationRequest){
         //background
         
         if UIApplication.sharedApplication().applicationState == .Background {
@@ -96,13 +98,13 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         checkLocationStatus()
     }
     
-    func addRequests(requests:[LocationRequest]){
+    public func addRequests(requests:[LocationRequest]){
         for request in requests {
             addRequest(request)
         }
     }
     
-    func removeRequest(request:LocationRequest){
+    public func removeRequest(request:LocationRequest){
         synchronized(requests) { 
             if let index = self.requests.indexOf(request) {
                 self.requests.removeAtIndex(index)
@@ -125,7 +127,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    func sendAllReply(){
+    private func sendAllReply(){
         let allRequests = requests
         synchronized(requests) { 
             for request in allRequests {
@@ -142,7 +144,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    func checkLocationStatus(){
+    private func checkLocationStatus(){
         
         var needLocation = false, needHeading = false
         synchronized(requests) {
@@ -176,7 +178,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    func enterLowMode(){
+    public func enterLowMode(){
         dispatch_async(dispatch_get_main_queue()) { 
             self.locationManager.stopUpdatingHeading()
             self.locationManager.stopUpdatingLocation()
@@ -191,7 +193,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    func askForAuthority(){
+    public func askForAuthority(){
         if #available(iOS 8.0, *) {
             if locationManager.respondsToSelector(#selector(locationManager.requestAlwaysAuthorization)) {
                 locationManager.requestAlwaysAuthorization()
@@ -202,7 +204,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     }
 
     
-    func synchronized(lock:AnyObject,f:()->()){
+    private func synchronized(lock:AnyObject,f:()->()){
         objc_sync_enter(lock)
         f()
         objc_sync_exit(lock)
@@ -210,7 +212,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     
     //MARK: - CLLocationManagerDelegate
     
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    public func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         synchronized(requests) { 
             if self.requests.count == 0 {
                 return
@@ -237,7 +239,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         sendAllReply()
     }
     
-    func locationManager(manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+    public func locationManager(manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         synchronized(requests) { 
             for request in self.requests {
                 if request.type == .HeadingRequest {
@@ -247,14 +249,14 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    func locationManagerShouldDisplayHeadingCalibration(manager: CLLocationManager) -> Bool {
+    public func locationManagerShouldDisplayHeadingCalibration(manager: CLLocationManager) -> Bool {
         if manager.heading == nil {return true}
         if manager.heading!.headingAccuracy < 0 {return true}
         if manager.heading!.headingAccuracy > 20 {return true}
         return false
     }
     
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         authorizationStatus = status
         if #available(iOS 8.0, *) {
             if status == .AuthorizedAlways {
