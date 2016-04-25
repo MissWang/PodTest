@@ -192,8 +192,12 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     func askForAuthority(){
-        if locationManager.respondsToSelector(#selector(locationManager.requestAlwaysAuthorization)) {
-            locationManager.requestAlwaysAuthorization()
+        if #available(iOS 8.0, *) {
+            if locationManager.respondsToSelector(#selector(locationManager.requestAlwaysAuthorization)) {
+                locationManager.requestAlwaysAuthorization()
+            }
+        } else {
+            // Fallback on earlier versions
         }
     }
 
@@ -252,8 +256,12 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         authorizationStatus = status
-        if status == .AuthorizedAlways {
-            checkLocationStatus()
+        if #available(iOS 8.0, *) {
+            if status == .AuthorizedAlways {
+                checkLocationStatus()
+            }
+        } else {
+            // Fallback on earlier versions
         }
         NSNotificationCenter.defaultCenter().postNotificationName(kNotificationLocationChangeStatus, object: nil)
     }
