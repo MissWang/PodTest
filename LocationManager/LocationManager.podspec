@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name         = "PodTest"
-s.version      = "1.0.1"
+s.version      = "1.0.5"
 s.summary      = "A location manager in swift."
 
 s.homepage     = "https://github.com/MissWang/PodTest"
