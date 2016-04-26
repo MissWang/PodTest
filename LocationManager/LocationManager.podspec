@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name         = "PodTest"
-s.version      = "1.0.0"
+s.version      = "1.0.6"
 s.summary      = "A location manager."
 
 s.homepage     = "https://github.com/MissWang/PodTest"
